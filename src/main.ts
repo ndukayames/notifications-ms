@@ -1,14 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {
-  ClientKafka,
-  MicroserviceOptions,
-  Transport,
-} from '@nestjs/microservices';
-import * as kafka from 'kafkajs';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  console.log(process.env.KAFKA_BROKERS);
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
 
@@ -16,7 +10,7 @@ async function bootstrap() {
       transport: Transport.KAFKA,
       options: {
         client: {
-          connectionTimeout: 5000,
+          connectionTimeout: 10000,
           brokers: [process.env.KAFKA_BROKERS] as any,
           sasl: {
             mechanism: process.env.KAFKA_SASL_MECHANISM as any,
@@ -24,6 +18,9 @@ async function bootstrap() {
             password: process.env.KAFKA_PASSWORD as string,
           },
           ssl: true,
+        },
+        subscribe: {
+          fromBeginning: true,
         },
         consumer: {
           groupId: 'notification_ms',

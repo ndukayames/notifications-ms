@@ -9,9 +9,9 @@ export class AppController {
 
   @Get()
   @EventPattern('new_talent_signup')
-  sendSignupEmail(@Payload() body: { name: string; email: string }): void {
+  async sendSignupEmail(@Payload() body: { name: string; email: string }) {
     this.logger.log('##### New talent signup kafka message received');
-    this.appService.sendSignupEmail(body);
+    await this.appService.sendSignupEmail(body);
     this.logger.log('##### New talent signup kafka message processed');
   }
 }
